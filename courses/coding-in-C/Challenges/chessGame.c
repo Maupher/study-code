@@ -93,11 +93,12 @@ void gridLettering(short length)
 {
     uint8_t A = 0b01000001; 
     char cSpace3[] = {0x20, 0x20, 0x20}; // Space
-    char cSpace2[] = {0x20, 0x20}; // Space
-    char cSpace1[] = {0x20};
+    // char cSpace2[] = {0x20, 0x20}; // Space
+    // char cSpace1[] = {0x20};
     printf("\n\t");    
-    printf(cSpace1);
-    
+    //printf(cSpace1); //Fehler macht 6 space snatt 1
+    putchar(0x20);
+    putchar(0x20);
     for (int i = 0; i < length; i++)
     {
         putchar(A);
