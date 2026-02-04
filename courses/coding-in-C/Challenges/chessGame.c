@@ -48,7 +48,8 @@ void buildGrid(short size)
 
 void gridHorizontal(short length)
 {
-    char cHoriz = 0x5F; // Horizontale Linie
+    // char cHoriz = 0x5F; // Horizontale Linie
+    char cHoriz = 0x2D;
     char cSpace[] = {0x20}; // Space
 
     printf("\n\t");
@@ -56,15 +57,18 @@ void gridHorizontal(short length)
     {
         printf(cSpace);
         putchar(cHoriz);
+        putchar(cHoriz);
     }
 } 
+
 
 //add Nummerierung!!
 void gridVertical(short length, bool color)
 {
     char cVert = 0x7C;  // Vertikale Linie
     char cBlack = 0x23; // "color" Black
-    char cSpace[] = {0x20, 0x20, 0x20}; // Space
+    char sSpace = 0x20; // Space
+    //char cSpace[] = {0x20, 0x20, 0x20}; // Space
     
     printf("\n\t");
     // for right color in der auswahl (i+color) % 2 --> wenn color 1 beginnt mit schwarz, wenn color 0 beginnt mit weiß und wechselt
@@ -72,12 +76,14 @@ void gridVertical(short length, bool color)
     {
         putchar(cVert);
         if ((i + color) % 2 == 0)
-        { 
-            printf(cSpace);
+        {  
+            for (int b = 0; b < 3; b++)
+                putchar(sSpace);
         }
         else if ((i + color) % 2 == 1)
         {
-            putchar(cBlack);
+            for (int b = 0; b < 3; b++)
+                putchar(cBlack);
         }
     }
     putchar(cVert);
@@ -86,15 +92,17 @@ void gridVertical(short length, bool color)
 void gridLettering(short length)
 {
     uint8_t A = 0b01000001; 
-    char cSpace[] = {0x20}; // Space
-
-    printf("\n\t");
+    char cSpace3[] = {0x20, 0x20, 0x20}; // Space
+    char cSpace2[] = {0x20, 0x20}; // Space
+    char cSpace1[] = {0x20};
+    printf("\n\t");    
+    printf(cSpace1);
+    
     for (int i = 0; i < length; i++)
     {
-        printf(cSpace);
         putchar(A);
         A++;
-        printf(cSpace);
+        printf(cSpace3);
     }
 }
  
