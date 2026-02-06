@@ -24,7 +24,7 @@ init_GUI();
 
 void init_GUI()
 {
-    short sGrid = 8;    // max. 25 (A - Z)
+    short sGrid = 20;    // max. 25 (A - Z)
     
     system("cls"); 
     printf("\n\n");
