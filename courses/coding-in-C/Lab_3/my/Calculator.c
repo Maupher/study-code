@@ -37,26 +37,22 @@ void main(){
         double dErgebnis;
         case 1: 
             dErgebnis = dEingabe1 + dEingabe2;
-            printf("\n\n\n\tDas Ergebnis ist: %d", dErgebnis);
             break;
         case 2: 
-            dErgebnis = dEingabe1 - dEingabe2;
-            printf("\n\n\n\tDas Ergebnis ist: %d", dErgebnis);
+            dErgebnis = dEingabe1 - dEingabe2;;
             break;
         case 3: 
             dErgebnis = dEingabe1 * dEingabe2;
-            printf("\n\n\n\tDas Ergebnis ist: %d", dErgebnis);
             break;
         case 4: 
             dErgebnis = dEingabe1 / dEingabe2;
-            printf("\n\n\n\tDas Ergebnis ist: %d", dErgebnis);
             break;
         default: 
             printf("FATAL ERROR");
             system("timeout /t 3");
             break;
     }
-
+    printf("\n\n\n\tDas Ergebnis ist: %d", dErgebnis);
     pause();
 
 }
@@ -74,8 +70,8 @@ double EingabeEinlesen_double(int EingabeNummer)
             printf("Ihre Eingabe %d. ist ungültig!", EingabeNummer);
             bcheck = false;
         }
-
         else bcheck = true;
+        putchar();
         pause();
 
     } while (bcheck == false);
