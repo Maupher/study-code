@@ -9,21 +9,19 @@ void main()
     char *pcInp = &cInput[0];
     char *ptest = &cInput[0];
 
-    ptest++;
+    ptest++; // zum nächsten zeichen gehen
 
-    printf("\n\n");
-    printf(cInput);
+    printf("%s",cInput);    //ausgabe String - alles
        printf("\n\n");
-    printf("%c",*pcInp);
+
+    printf("%c",*pcInp);    //ausageb "initialisierte" Stelle
     printf("\n\n");
-    printf("%c",*ptest);
-    ptest++;
-    printf("%c",*ptest);
-    printf("\n\n");
-    ptest++;
-    printf("%c",*ptest);
+
+    ptest++; // zum nächsten zeichen gehen
+    printf("%c",*ptest);    //ausgabe des spezifischen zeichens -> hochgezählt desgkab zweites
+
        printf("\n\n");
-       printf("%p",&pcInp);
+       printf("%p",&pcInp); //Ausgabe adresse
 
 }
 
