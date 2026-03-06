@@ -24,13 +24,13 @@ struct Song{
     Song* p_next;
 
     uint16_t id;
-    char c_name[stdCharLength];
-    char c_artist[stdCharLength];
+    char name[stdCharLength];
+    char artist[stdCharLength];
     uint16_t playtime; //defined in seconds
-    time_t timestamp_add;
+    time_t timestamp;
 };
 
-
+//Function to create a PlayList
 void Playlist_create(Playlist* p_self, char Playlist_name, char created_by, time_t timestamp);
 
 //Funktion for creating a Song

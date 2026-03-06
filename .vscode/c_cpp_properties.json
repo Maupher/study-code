@@ -2,9 +2,12 @@
     "version": 4,
     "configurations": [
         {
-            "name": "Windows",
+            "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/courses/coding-in-C/Lab_8/solution/include",
+                "${workspaceFolder}/courses/coding-in-C/Lab_9/solution/include",
+                "${workspaceFolder}/courses/coding-in-C/mySolutions/Playlist/inlude"
             ],
             "defines": [
                 "_DEBUG",
@@ -12,29 +15,15 @@
                 "_UNICODE"
             ],
             "compilerPath": "C:/msys64/ucrt64/bin/gcc.exe",
-            "intelliSenseMode": "windows-gcc-x64"
-        },
-        {
-            "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/**"
-            ],
-            "defines": [
-                "_DEBUG"
-            ],
-            "compilerPath": "/usr/bin/gcc",
-            "intelliSenseMode": "linux-gcc-x64"
-        },
-        {
-            "name": "macOS",
-            "includePath": [
-                "${workspaceFolder}/**"
-            ],
-            "defines": [
-                "_DEBUG"
-            ],
-            "compilerPath": "/usr/bin/clang",
-            "intelliSenseMode": "macos-clang-x64"
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-gcc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
         }
     ]
 }
