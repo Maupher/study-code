@@ -21,6 +21,7 @@ int Player::get_age() const
     return age;
 }
 
+//function is virtuell und generisch ?
 void Player::train(int intensity)
 {
     if (intensity < 0 || intensity > 100)
@@ -39,6 +40,7 @@ InjuredPlayer::InjuredPlayer(const std::string &name, int age)
 
 void InjuredPlayer::train(int intensity)
 {
+    // fehler liskovsche substitutionsprinzip
     if (intensity > 30)
     {
         std::cout << "ERROR: Injured players only accept intensity values up to 30.\n";
