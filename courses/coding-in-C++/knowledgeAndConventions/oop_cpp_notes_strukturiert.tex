@@ -1,0 +1,903 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Sprache & Layout ----------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+
+% ---------- Hyperlinks ----------
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue,
+  pdftitle={Restrukturierte C++- und OOP-Notizen},
+  pdfauthor={}
+}
+
+% ---------- Code-Layout ----------
+\definecolor{codegray}{gray}{0.95}
+\lstdefinestyle{cppstyle}{
+  language=C++,
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape,
+  stringstyle=\ttfamily,
+  numbers=left,
+  numberstyle=\tiny,
+  stepnumber=1,
+  numbersep=8pt,
+  frame=single,
+  breaklines=true,
+  tabsize=2,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  inputencoding=utf8,
+  extendedchars=true,
+  literate={ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1
+}
+\lstset{style=cppstyle}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\important}[1]{\textbf{#1}}
+
+\title{Restrukturierte Notizen zu C++ und objektorientierter Programmierung}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Objektorientierte Programmierung}
+
+\subsection{Die vier Grundsäulen der OOP}
+\begin{enumerate}[label=\arabic*.]
+  \item \important{Vererbung}: Klassen können Eigenschaften und Verhalten anderer Klassen übernehmen.
+  \item \important{Abstraktion}: Wesentliche Eigenschaften werden hervorgehoben, unwichtige Details werden ausgeblendet.
+  \item \important{Polymorphie}: Objekte können über gemeinsame Schnittstellen unterschiedlich reagieren.
+  \item \important{Datenkapselung}: Daten werden geschützt und kontrolliert über Methoden zugänglich gemacht.
+\end{enumerate}
+
+\subsection{Polymorphie}
+\subsubsection{Statische Polymorphie}
+Statische Polymorphie wird zur Compilezeit aufgelöst. Typische Beispiele sind Funktionsüberladung und Templates.
+
+\subsubsection{Dynamische Polymorphie}
+Dynamische Polymorphie wird zur Laufzeit aufgelöst. Sie entsteht typischerweise durch:
+\begin{itemize}
+  \item Vererbung,
+  \item virtuelle Funktionen,
+  \item Aufrufe über Basisklassen-Zeiger oder Basisklassen-Referenzen.
+\end{itemize}
+
+\begin{lstlisting}[caption={Dynamische Polymorphie mit virtueller Funktion}]
+class Base {
+public:
+    virtual void print() const;
+    virtual ~Base() = default;
+};
+
+class Child : public Base {
+public:
+    void print() const override;
+};
+
+void call(const Base& object) {
+    object.print(); // Laufzeitentscheidung
+}
+\end{lstlisting}
+
+\subsection{Statischer und dynamischer Typ}
+\begin{description}
+  \item[Statischer Typ] Der Typ, der zur Compilezeit bekannt ist, z.\,B. der Typ eines Zeigers oder einer Referenz.
+  \item[Dynamischer Typ] Der tatsächliche Objekttyp, auf den ein Zeiger oder eine Referenz zur Laufzeit zeigt.
+\end{description}
+
+\section{Grundstrukturen, Sichtbarkeiten und UML}
+
+\subsection{\code{struct} vs. \code{class}}
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Konstrukt & Standardsichtbarkeit & Typischer Einsatz \\
+\midrule
+\code{struct} & \code{public} & einfache Datenstrukturen \\
+\code{class} & \code{private} & gekapselte Objekte mit Methoden \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{UML-Sichtbarkeiten}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Symbol & Bedeutung \\
+\midrule
+\code{+} & public \\
+\code{-} & private \\
+\code{\#} & protected \\
+\code{\textasciitilde} & package \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{UML-Attributzusätze}
+\begin{description}
+  \item[\code{/Attribut}] Abgeleitetes Attribut; keine direkte Initialisierung nötig, da es berechnet wird.
+  \item[\code{readOnly}] Wert darf nicht verändert werden.
+  \item[\code{unique / nonunique}] Werte sind eindeutig bzw. nicht eindeutig.
+  \item[\code{ordered / unordered}] Werte sind geordnet bzw. ungeordnet.
+  \item[\code{composite}] Teil einer Komposition.
+  \item[\code{bag}] ungeordnete Sammlung mit möglichen Duplikaten.
+  \item[\code{seq / sequence}] geordnete Sammlung.
+  \item[\code{union}] Vereinigung mehrerer Mengen.
+  \item[\code{query}] lesende Operation ohne Zustandsänderung.
+\end{description}
+
+\subsection{Parameterrichtungen in UML}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Richtung & Bedeutung \\
+\midrule
+\code{in} & Parameter wird gelesen \\
+\code{out} & Parameter wird geschrieben \\
+\code{inout} & Parameter wird gelesen und geschrieben \\
+\code{return} & Parameter ist Rückgabewert \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Allgemeine Syntax}
+
+\subsection{Scope-Resolution-Operator}
+Der Scope-Resolution-Operator \code{::} wird verwendet, um auf Elemente in Klassen, Namespaces oder globalen Bereichen zuzugreifen.
+
+\begin{lstlisting}[caption={Zugriff auf einen Namen im Namespace std}]
+std::cout << "Hallo Welt";
+\end{lstlisting}
+
+\section{SOLID-Prinzipien}
+\begin{description}
+  \item[S -- Single Responsibility Principle] Eine Klasse sollte genau eine klar abgegrenzte Verantwortung haben.
+  \item[O -- Open/Closed Principle] Softwareeinheiten sollten offen für Erweiterung, aber geschlossen für Änderung sein.
+  \item[L -- Liskov Substitution Principle] Objekte einer Basisklasse müssen durch Objekte abgeleiteter Klassen ersetzbar sein.
+  \item[I -- Interface Segregation Principle] Schnittstellen sollten klein und spezifisch sein.
+  \item[D -- Dependency Inversion Principle] Abhängigkeiten sollten von Abstraktionen statt von konkreten Implementierungen abhängen.
+\end{description}
+
+\section{Naming Conventions}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Element & Mögliche Konventionen & Gewählte Konvention \\
+\midrule
+Variablen & \code{camelCase}, \code{lower\_snake\_case} & \code{lower\_snake\_case} \\
+Konstanten & \code{UPPER\_SNAKE\_CASE} & \code{UPPER\_SNAKE\_CASE} \\
+Funktionen & \code{camelCase}, \code{lower\_snake\_case} & \code{camelCase} \\
+Klassen / Structs / Enums & \code{PascalCase} & \code{PascalCase} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Namespaces}
+
+Namespaces werden genutzt, um Code logisch zu strukturieren und Namenskonflikte zu vermeiden.
+
+\begin{lstlisting}[caption={Namespace-Struktur}]
+namespace project {
+namespace modul {
+    void init();
+    void disable();
+}
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Aufruf einer Funktion im Namespace}]
+project::modul::init();
+\end{lstlisting}
+
+\section{Variablen und Konstanten}
+
+\subsection{\code{auto}}
+Mit \code{auto} leitet der Compiler den Typ automatisch aus dem Ausdruck rechts der Zuweisung ab.
+
+\begin{lstlisting}[caption={Typableitung mit auto}]
+auto number = 42;      // int
+auto value = 3.14;     // double
+auto text = "Hallo";   // const char*
+\end{lstlisting}
+
+\subsection{\code{std::optional}}
+\code{std::optional} ist ein Container aus der C++-Standardbibliothek für Werte, die vorhanden sein können, aber nicht müssen.
+
+\begin{lstlisting}[caption={Optionaler Rückgabewert}]
+#include <optional>
+
+std::optional<int> find_value(bool found) {
+    if (found) {
+        return 42;
+    }
+    return std::nullopt;
+}
+\end{lstlisting}
+
+\subsection{\code{const}}
+\code{const} kennzeichnet Werte, Parameter, Referenzen oder Methoden als unveränderlich.
+
+\begin{lstlisting}[caption={Konstante Referenz als Funktionsparameter}]
+void print(const std::string& text) {
+    // text darf hier nicht verändert werden
+}
+\end{lstlisting}
+
+\subsection{\code{constexpr}}
+\code{constexpr} kennzeichnet Werte oder Funktionen, die zur Compilezeit berechenbar sein müssen.
+
+\begin{lstlisting}[caption={Compilezeit-Konstante}]
+constexpr int square(int x) {
+    return x * x;
+}
+
+constexpr int result = square(5);
+\end{lstlisting}
+
+\subsection{\code{static}}
+\code{static} kann je nach Kontext bedeuten, dass eine Variable oder Funktion an eine Klasse, Datei oder Lebensdauer gebunden ist. Bei Klassenmembern bedeutet es: Der Member gehört zur Klasse und nicht zu einem einzelnen Objekt.
+
+\section{Fließkommazahlen vergleichen}
+
+Fließkommazahlen werden binär approximiert. Dadurch entstehen Rundungsfehler, sodass direkte Gleichheitsvergleiche unzuverlässig sein können. Stattdessen vergleicht man mit einer Toleranz.
+
+\begin{lstlisting}[caption={Vergleich mit Epsilon}]
+#include <cmath>
+
+const double EPSILON = 1e-9;
+
+bool almost_equal(double a, double b) {
+    return std::fabs(a - b) < EPSILON;
+}
+\end{lstlisting}
+
+\important{Merke:} \code{double} hat ungefähr 15 signifikante Dezimalstellen. Unterschiede kleiner als etwa \code{1e-15} können maschinelles Rauschen sein.
+
+\section{Strings}
+
+\subsection{Einbindung und Initialisierung}
+\begin{lstlisting}[caption={String initialisieren}]
+#include <string>
+
+std::string name = "Content";
+\end{lstlisting}
+
+\subsection{Operatoren}
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Operation & Syntax & Bedeutung \\
+\midrule
+Zuweisung & \code{s1 = s2} & Inhalt zuweisen \\
+Verkettung & \code{s1 += s2} & an bestehenden String anhängen \\
+Verkettung & \code{s = s1 + s2} & neuen String bilden \\
+Vergleich & \code{s1 == s2} & Gleichheit prüfen \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Wichtige Methoden}
+\begin{lstlisting}[caption={String-Methoden}]
+std::string text = "Hallo Welt";
+
+std::size_t length = text.length();
+std::size_t position = text.find("Welt");
+std::string part = text.substr(0, 5);
+\end{lstlisting}
+
+\begin{description}
+  \item[\code{find(...)}] sucht von links.
+  \item[\code{rfind(...)}] sucht von rechts.
+  \item[\code{find\_first\_of(...)}] sucht das erste Zeichen aus einer Menge.
+  \item[\code{find\_last\_of(...)}] sucht das letzte Zeichen aus einer Menge.
+  \item[\code{find\_first\_not\_of(...)}] sucht das erste Zeichen, das nicht in der Menge ist.
+  \item[\code{substr(start, length)}] extrahiert einen Teilstring.
+\end{description}
+
+\section{Casts}
+
+\important{Grundregel:} Casts sollten bewusst und sparsam eingesetzt werden. Häufig sind sie ein Hinweis auf schlechtes Design oder fehlende Abstraktion.
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Cast & Zweck \\
+\midrule
+\code{static\_cast} & normale, explizite Umwandlungen, z.\,B. \code{int} zu \code{float} \\
+\code{dynamic\_cast} & sichere Casts in Vererbungshierarchien \\
+\code{const\_cast} & Entfernen oder Hinzufügen von \code{const} \\
+\code{reinterpret\_cast} & sehr unsichere Low-Level-Umdeutung; möglichst vermeiden \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Pointer und Referenzen}
+
+\subsection{Referenzen}
+Eine Referenz ist ein Alias für eine bestehende Variable.
+
+\begin{lstlisting}[caption={Referenz}]
+int a = 10;
+int& ref = a;
+\end{lstlisting}
+
+\subsection{Pointer}
+Ein Pointer speichert die Adresse einer Variable. Mit \code{*} wird dereferenziert.
+
+\begin{lstlisting}[caption={Pointer und Dereferenzierung}]
+int a = 10;
+int* pointer = &a;
+
+std::cout << pointer;   // Adresse von a
+std::cout << *pointer;  // Wert von a
+\end{lstlisting}
+
+\subsection{Übergabe an Funktionen}
+
+\subsubsection{Call-by-Value}
+Die Funktion erhält eine Kopie. Änderungen wirken sich nicht auf das Original aus.
+
+\begin{lstlisting}[caption={Call-by-Value}]
+void change(int x) {
+    x = 99;
+}
+\end{lstlisting}
+
+\subsubsection{Call-by-Pointer}
+Die Adresse wird übergeben. Das Original kann verändert werden. Achtung: Ein Pointer kann \code{nullptr} sein.
+
+\begin{lstlisting}[caption={Call-by-Pointer}]
+void change(int* p) {
+    if (p != nullptr) {
+        *p = 99;
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Call-by-Reference}
+Die Variable wird als Alias übergeben. Es entsteht keine Kopie.
+
+\begin{lstlisting}[caption={Call-by-Reference}]
+void change(int& ref) {
+    ref = 99;
+}
+\end{lstlisting}
+
+\subsubsection{Konstante Referenz}
+Best Practice für lesenden Zugriff auf größere Objekte.
+
+\begin{lstlisting}[caption={Konstante Referenz}]
+void print(const std::string& text) {
+    std::cout << text;
+}
+\end{lstlisting}
+
+\section{Dynamische Speicherverwaltung}
+
+\subsection{\code{new}}
+\code{new} reserviert Speicher, erzeugt ein Objekt und ruft gegebenenfalls den Konstruktor auf.
+
+\begin{lstlisting}[caption={Speicher mit new reservieren}]
+int* p_int = new int;
+int* int_initialisiert = new int(42);
+int* int_array = new int[10];
+
+MyClass* p_object = new MyClass();
+\end{lstlisting}
+
+\subsection{\code{delete}}
+\code{delete} gibt Speicher frei, der mit \code{new} reserviert wurde. Bei Objekten wird zusätzlich der Destruktor aufgerufen.
+
+\begin{lstlisting}[caption={Speicher freigeben}]
+delete p_int;
+delete p_object;
+delete[] int_array;
+\end{lstlisting}
+
+\important{Hinweis:} In modernem C++ sollten häufig Smart Pointer wie \code{std::unique\_ptr} oder \code{std::shared\_ptr} statt manuellem \code{new}/\code{delete} verwendet werden.
+
+\subsection{Smart Pointer}
+Smart Pointer verwalten dynamisch erzeugte Objekte automatisch. Das zentrale Prinzip dahinter heißt \important{RAII} (Resource Acquisition Is Initialization): Eine Ressource wird an ein Objekt gebunden und automatisch freigegeben, sobald dieses Objekt seinen Gültigkeitsbereich verlässt.
+
+Dafür muss der Header \code{<memory>} eingebunden werden.
+
+\begin{lstlisting}[caption={Header für Smart Pointer}]
+#include <memory>
+\end{lstlisting}
+
+\subsubsection{Warum Smart Pointer?}
+Smart Pointer vermeiden typische Fehler der manuellen Speicherverwaltung:
+\begin{itemize}
+  \item vergessene \code{delete}-Aufrufe,
+  \item doppelte Freigabe desselben Speichers,
+  \item Speicherlecks bei Exceptions,
+  \item unklare Besitzverhältnisse von Objekten.
+\end{itemize}
+
+\subsubsection{\code{std::unique\_ptr}}
+\code{std::unique\_ptr} besitzt ein Objekt exklusiv. Es gibt genau einen Besitzer. Der Pointer kann nicht kopiert, aber verschoben werden.
+
+\begin{lstlisting}[caption={Exklusiver Besitz mit std::unique\_ptr}]
+#include <memory>
+
+class Motor {
+public:
+    void start() {}
+};
+
+int main() {
+    auto motor = std::make_unique<Motor>();
+    motor->start();
+
+    // Kein delete notwendig.
+    // Der Motor wird automatisch freigegeben,
+    // sobald motor den Scope verlässt.
+}
+\end{lstlisting}
+
+\important{Best Practice:} Verwende \code{std::make\_unique<T>(...)} statt \code{new}, weil der Code sicherer und lesbarer ist.
+
+\subsubsection{\code{std::shared\_ptr}}
+\code{std::shared\_ptr} erlaubt gemeinsamen Besitz. Mehrere Smart Pointer können dasselbe Objekt besitzen. Das Objekt wird erst gelöscht, wenn der letzte \code{std::shared\_ptr} zerstört wurde.
+
+\begin{lstlisting}[caption={Gemeinsamer Besitz mit std::shared\_ptr}]
+#include <memory>
+
+class Sensor {
+public:
+    void read() const {}
+};
+
+int main() {
+    auto sensor_1 = std::make_shared<Sensor>();
+    auto sensor_2 = sensor_1; // Referenzzähler wird erhöht
+
+    sensor_1->read();
+    sensor_2->read();
+
+    // Das Objekt lebt, solange mindestens ein shared_ptr darauf zeigt.
+}
+\end{lstlisting}
+
+\important{Best Practice:} Verwende \code{std::shared\_ptr} nur, wenn wirklich mehrere Besitzer notwendig sind. Sonst ist \code{std::unique\_ptr} meistens die bessere Wahl.
+
+\subsubsection{\code{std::weak\_ptr}}
+\code{std::weak\_ptr} beobachtet ein Objekt, das von \code{std::shared\_ptr} verwaltet wird, besitzt es aber nicht. Dadurch wird der Referenzzähler nicht erhöht. Das ist besonders wichtig, um zyklische Referenzen zu vermeiden.
+
+\begin{lstlisting}[caption={Beobachtender Zugriff mit std::weak\_ptr}]
+#include <memory>
+#include <iostream>
+
+int main() {
+    auto shared = std::make_shared<int>(42);
+    std::weak_ptr<int> weak = shared;
+
+    if (auto locked = weak.lock()) {
+        std::cout << *locked << '\n';
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Vergleich der Smart Pointer}
+\begin{center}
+\begin{tabular}{p{3.2cm}p{5.4cm}p{5.2cm}}
+\toprule
+Smart Pointer & Besitzmodell & Typischer Einsatz \\
+\midrule
+\code{std::unique\_ptr} & exklusiver Besitz; nicht kopierbar, nur verschiebbar & Standardwahl für dynamische Objekte mit eindeutigem Besitzer \\
+\code{std::shared\_ptr} & gemeinsamer Besitz mit Referenzzählung & mehrere unabhängige Besitzer benötigen dasselbe Objekt \\
+\code{std::weak\_ptr} & kein Besitz; beobachtet ein \code{std::shared\_ptr}-Objekt & Vermeidung zyklischer Referenzen und optionaler Zugriff \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsubsection{Merksätze}
+\begin{itemize}
+  \item Verwende \code{std::unique\_ptr}, wenn genau ein Objekt für die Lebensdauer verantwortlich ist.
+  \item Verwende \code{std::shared\_ptr}, wenn sich mehrere Stellen den Besitz wirklich teilen müssen.
+  \item Verwende \code{std::weak\_ptr}, wenn du ein Objekt nur beobachten willst.
+  \item Verwende \code{std::make\_unique} und \code{std::make\_shared} statt direktem \code{new}.
+  \item Manuelles \code{delete} sollte in modernem C++ möglichst selten notwendig sein.
+\end{itemize}
+
+\section{Klassen}
+
+\subsection{Sichtbarkeiten}
+\begin{description}
+  \item[\code{private}] Methoden und Attribute sind nur innerhalb der Klasse sichtbar. Ausnahme: \code{friend}.
+  \item[\code{protected}] Sichtbar in der Klasse selbst und in abgeleiteten Klassen.
+  \item[\code{public}] Öffentlich sichtbar.
+\end{description}
+
+\subsection{Konstruktor und Destruktor}
+Konstruktoren initialisieren Objekte. Destruktoren räumen Ressourcen beim Zerstören eines Objekts auf.
+
+\begin{lstlisting}[caption={Konstruktor und Destruktor}]
+class Klassenname {
+public:
+    Klassenname();   // Konstruktor
+    ~Klassenname();  // Destruktor
+};
+\end{lstlisting}
+
+\subsection{Attribute initialisieren}
+\subsubsection{Problematische Zuweisung}
+\begin{lstlisting}[caption={Unklare Initialisierung}]
+Auto::Auto(std::string ps, int seats) {
+    ps = ps;
+    seats = seats;
+}
+\end{lstlisting}
+
+\subsubsection{Zuweisung mit \code{this}}
+\begin{lstlisting}[caption={Zuweisung mit this}]
+Auto::Auto(std::string ps, int seats) {
+    this->ps = ps;
+    this->seats = seats;
+}
+\end{lstlisting}
+
+\subsubsection{Bessere Lösung: Initialisierungsliste}
+\begin{lstlisting}[caption={Initialisierungsliste}]
+Auto::Auto(std::string ps, int seats)
+    : ps{ps}, seats{seats} {
+}
+\end{lstlisting}
+
+\subsection{Konstante Memberfunktionen}
+Konstante Memberfunktionen dürfen keine Attribute des Objekts verändern. Sie eignen sich für Query-Funktionen.
+
+\begin{lstlisting}[caption={Konstante Memberfunktion}]
+class Auto {
+public:
+    int get_ps() const {
+        return ps;
+    }
+
+private:
+    int ps;
+};
+\end{lstlisting}
+
+\section{Statische Klassenmember}
+
+\subsection{Statische Variablen}
+Statische Klassenmember sind an die Klasse gebunden und nicht an ein einzelnes Objekt. Sie existieren nur einmal.
+
+\begin{lstlisting}[caption={Statische Klassenvariable}]
+class Auto {
+public:
+    static int anzahl_autos;
+
+    Auto() {
+        ++anzahl_autos;
+    }
+};
+
+int Auto::anzahl_autos = 0;
+\end{lstlisting}
+
+\subsection{Statische Methoden}
+Statische Methoden funktionieren ohne Objekt. Sie besitzen keinen \code{this}-Pointer und können direkt nur auf statische Member zugreifen.
+
+\begin{lstlisting}[caption={Statische Methode}]
+class Rechner {
+public:
+    static int add(int a, int b) {
+        return a + b;
+    }
+};
+
+int ergebnis = Rechner::add(5, 5);
+\end{lstlisting}
+
+\section{Vererbung}
+
+\subsection{Basisklasse und abgeleitete Klasse}
+\begin{lstlisting}[caption={Einfache Vererbung}]
+class Base {
+public:
+    Base() = default;
+};
+
+class Child : public Base {
+public:
+    Child() = default;
+};
+\end{lstlisting}
+
+\subsection{Aufruf des Basisklassen-Konstruktors}
+Wenn die Basisklasse keinen Default-Konstruktor besitzt, muss die abgeleitete Klasse den passenden Konstruktor explizit aufrufen.
+
+\begin{lstlisting}[caption={Basisklassen-Konstruktor aufrufen}]
+class Base {
+public:
+    explicit Base(int value);
+};
+
+class Child : public Base {
+public:
+    Child(int x) : Base{x} {
+    }
+};
+\end{lstlisting}
+
+\subsection{Virtueller Destruktor}
+Bei Polymorphie sollte die Basisklasse einen virtuellen Destruktor besitzen.
+
+\begin{lstlisting}[caption={Virtueller Destruktor}]
+class Base {
+public:
+    virtual ~Base() = default;
+};
+
+class Child : public Base {
+public:
+    ~Child() override = default;
+};
+\end{lstlisting}
+
+\section{Klassenbeziehungen}
+
+\subsection{Assoziation}
+Eine Assoziation ist eine lockere Beziehung zwischen zwei Klassen.
+
+\begin{lstlisting}[caption={Assoziation}]
+class Fahrer;
+
+class Auto {
+public:
+    Fahrer* fahrer;
+};
+\end{lstlisting}
+
+\subsection{Aggregation}
+Eine Aggregation ist ebenfalls eine lockere Beziehung. Das enthaltene Objekt kann unabhängig vom Besitzer existieren.
+
+\subsection{Komposition}
+Eine Komposition ist eine starke, exklusive Beziehung. Das Teilobjekt gehört fest zum Ganzen.
+
+\begin{lstlisting}[caption={Komposition}]
+class Rad {};
+
+class Auto {
+public:
+    Rad raeder[4];
+};
+\end{lstlisting}
+
+\section{STL-Container}
+
+\subsection{Wichtige Container}
+\begin{itemize}
+  \item \code{std::vector}
+  \item \code{std::list}
+  \item \code{std::deque}
+  \item \code{std::queue}
+  \item \code{std::priority\_queue}
+  \item \code{std::map}
+\end{itemize}
+
+\subsection{Gemeinsame Funktionen}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Funktion & Bedeutung \\
+\midrule
+\code{x.size()} & Anzahl der Elemente \\
+\code{x.empty()} & \code{true}, wenn Container leer ist \\
+\code{x.insert(position, wert)} & Wert einfügen \\
+\code{x.erase(position)} & Wert löschen \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Iteratoren}
+
+\subsection{Iterator-Kategorien}
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Kategorie & Eigenschaften & Beispiele \\
+\midrule
+Input & liest Daten einmalig, nur vorwärts & Input Streams \\
+Output & schreibt Daten, nur vorwärts & Output Streams \\
+Forward & liest/schreibt mehrfach, nur vorwärts & \code{forward\_list}, \code{unordered\_map} \\
+Bidirectional & vorwärts und rückwärts & \code{std::list}, \code{std::map} \\
+Random Access & beliebiger Zugriff, pointerähnlich & \code{std::vector} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Iterator-Funktionen}
+\begin{description}
+  \item[\code{x.begin()}] Iterator auf das erste Element.
+  \item[\code{x.end()}] Iterator hinter das letzte Element.
+\end{description}
+
+\begin{lstlisting}[caption={Iterator-Beispiel}]
+std::vector<int> values{1, 2, 3};
+
+for (std::vector<int>::iterator it = values.begin(); it != values.end(); ++it) {
+    std::cout << *it << " ";
+}
+\end{lstlisting}
+
+\section{STL-Algorithmen}
+
+\subsection{Suchalgorithmen}
+\begin{description}
+  \item[\code{std::find}] findet das erste passende Element.
+  \item[\code{std::search}] sucht ein Muster.
+\end{description}
+
+\subsection{Sortieralgorithmen}
+\begin{description}
+  \item[\code{std::sort}] sortiert Elemente aufsteigend.
+  \item[\code{std::reverse}] kehrt die Reihenfolge um.
+  \item[\code{std::shuffle}] mischt Elemente zufällig.
+\end{description}
+
+\subsection{Numerische Algorithmen}
+\begin{description}
+  \item[\code{std::accumulate}] berechnet z.\,B. eine Summe.
+  \item[\code{std::count}] zählt Vorkommen eines bestimmten Wertes.
+\end{description}
+
+\subsection{Modifizierende Algorithmen}
+\begin{description}
+  \item[\code{std::copy}] kopiert Elemente.
+  \item[\code{std::transform}] wendet eine Funktion auf Elemente an.
+  \item[\code{std::replace}] ersetzt Werte.
+\end{description}
+
+\begin{lstlisting}[caption={std::transform mit Lambda}]
+std::transform(values.begin(), values.end(),
+               values.begin(),
+               [](int x) {
+                   return x * 2;
+               });
+\end{lstlisting}
+
+\section{Range-based for-Schleifen}
+
+\subsection{Kopie}
+\begin{lstlisting}[caption={for-each mit Kopie}]
+for (int x : container) {
+    // x ist eine Kopie
+}
+\end{lstlisting}
+Änderungen an \code{x} wirken sich nicht auf den Container aus.
+
+\subsection{Referenz}
+\begin{lstlisting}[caption={for-each mit Referenz}]
+for (int& x : container) {
+    // x ist der Originalwert
+}
+\end{lstlisting}
+Änderungen an \code{x} wirken sich auf den Container aus.
+
+\subsection{Konstante Referenz}
+\begin{lstlisting}[caption={Best Practice: konstante Referenz}]
+for (const int& x : container) {
+    // effizient und sicher
+}
+\end{lstlisting}
+
+\subsection{Structured Bindings}
+\begin{lstlisting}[caption={Structured Binding bei std::map}]
+std::map<double, int> m;
+
+for (const auto& [key, value] : m) {
+    std::cout << key << ": " << value << '\n';
+}
+\end{lstlisting}
+
+\important{Hinweis:} Die Syntax \code{[key, value]} ist ein Structured Binding und kein Array.
+
+\section{Templates}
+
+Templates ermöglichen generische Funktionen und Klassen. Sie werden zur Compilezeit instanziiert. Der Compiler erzeugt für die verwendeten Typen passende konkrete Versionen.
+
+\begin{lstlisting}[caption={Generische Funktion mit Template}]
+template <typename T, int SIZE>
+void print(T (&array)[SIZE]) {
+    for (int i = 0; i < SIZE; ++i) {
+        std::cout << array[i] << '\n';
+    }
+}
+\end{lstlisting}
+
+\subsection{Eigenschaften von Templates}
+\begin{itemize}
+  \item Sie werden zur Compilezeit aufgelöst.
+  \item Sie können für verschiedene Typen verwendet werden.
+  \item Sie werden in jeder Übersetzungseinheit separat instanziiert, wenn sie dort verwendet werden.
+  \item Spezialisierungen können für Sonderfälle definiert werden.
+\end{itemize}
+
+\section{Exception Handling}
+
+Exception Handling dient der Fehlerbehandlung mit Ausnahmen. Fehler können gemeldet, abgefangen und behandelt werden.
+
+\subsection{Grundbegriffe}
+\begin{description}
+  \item[\code{throw}] meldet einen Fehler.
+  \item[\code{try}] markiert einen Codeblock, in dem Fehler auftreten können.
+  \item[\code{catch}] fängt und behandelt Fehler.
+\end{description}
+
+\subsection{Wichtige Standard-Exceptions}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Exception & Bedeutung \\
+\midrule
+\code{std::invalid\_argument} & ungültiges Argument \\
+\code{std::out\_of\_range} & Index außerhalb des erlaubten Bereichs \\
+\code{std::runtime\_error} & allgemeiner Laufzeitfehler \\
+\code{std::bad\_alloc} & Speicherallokation fehlgeschlagen \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Alle genannten Exceptions erben von \code{std::exception}. Mit \code{error.what()} kann eine Fehlermeldung ausgegeben werden.
+
+\subsection{Catch-Reihenfolge}
+Spezifische Exceptions sollten vor allgemeinen Exceptions gefangen werden.
+
+\begin{lstlisting}[caption={try-catch-Struktur}]
+try {
+    // riskanter Code
+}
+catch (const std::invalid_argument& error) {
+    std::cout << "Ungueltiges Argument: " << error.what() << '\n';
+}
+catch (const std::out_of_range& error) {
+    std::cout << "Bereichsfehler: " << error.what() << '\n';
+}
+catch (const std::exception& error) {
+    std::cout << "Standard-Exception: " << error.what() << '\n';
+}
+catch (...) {
+    std::cout << "Unbekannter Fehler\n";
+}
+\end{lstlisting}
+
+\subsection{Best Practice}
+\begin{lstlisting}[caption={Allgemeiner catch-Block}]
+catch (const std::exception& e) {
+    std::cout << e.what() << '\n';
+}
+\end{lstlisting}
+
+\subsection{\code{noexcept}}
+Eine Funktion, die keine Exceptions werfen darf, kann mit \code{noexcept} markiert werden.
+
+\begin{lstlisting}[caption={noexcept-Funktion}]
+void foo() noexcept {
+}
+\end{lstlisting}
+
+\end{document}
