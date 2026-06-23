@@ -3,6 +3,9 @@
 
 #include <string>
 
+
+//player and injured player conflict with open/closed --> healthy / injured player ---> Player als reines interface
+//train in healthy und injured implementieren
 class Player
 {
 private:
@@ -27,6 +30,7 @@ public:
     void train(int intensity) override;
 };
 
+//single responsibility with seperate interfaces
 class ClubService
 {
 public:
@@ -49,10 +53,13 @@ public:
     void send(const Player &player, const std::string &message);
 };
 
+
+//Interface Segregation fault
+
 class FootballManager : public ClubService
 {
 private:
-    void select_strategy(const std::string &strategy);
+    void select_strategy(const std::string &strategy); //open close --> subclasses
 
     FilePlayerRepository repository;
     EmailNotifier notifier;
